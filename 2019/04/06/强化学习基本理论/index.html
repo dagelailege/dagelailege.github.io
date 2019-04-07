@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=7.0.1">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.0.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.0.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.0.1">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.0.1" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.0.1',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="强化学习基本理论简介：本篇博客将介绍强化学习的基本理论，包括强化学习定义、马尔可夫决策过程、价值函数、贝尔曼方程、动态规划-基于模型的解决方案、强化学习-无模型的解决方案 [TOC] 强化学习定义强化学习是机器学习领域内的一类算法，其目的在于：允许学习器(agent)学习如何在环境中动作，在学习的过程中，环境不断的给予动作相应的反馈。强化学习更多的指的是一类的算法或者学习问题的范式，其目标是长期最">
+<meta name="keywords" content="理论研究,机器学习,人工智能">
+<meta property="og:type" content="article">
+<meta property="og:title" content="强化学习基本理论">
+<meta property="og:url" content="http://yoursite.com/2019/04/06/强化学习基本理论/index.html">
+<meta property="og:site_name" content="一个帅哥的博客">
+<meta property="og:description" content="强化学习基本理论简介：本篇博客将介绍强化学习的基本理论，包括强化学习定义、马尔可夫决策过程、价值函数、贝尔曼方程、动态规划-基于模型的解决方案、强化学习-无模型的解决方案 [TOC] 强化学习定义强化学习是机器学习领域内的一类算法，其目的在于：允许学习器(agent)学习如何在环境中动作，在学习的过程中，环境不断的给予动作相应的反馈。强化学习更多的指的是一类的算法或者学习问题的范式，其目标是长期最">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-04-07T07:02:40.432Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="强化学习基本理论">
+<meta name="twitter:description" content="强化学习基本理论简介：本篇博客将介绍强化学习的基本理论，包括强化学习定义、马尔可夫决策过程、价值函数、贝尔曼方程、动态规划-基于模型的解决方案、强化学习-无模型的解决方案 [TOC] 强化学习定义强化学习是机器学习领域内的一类算法，其目的在于：允许学习器(agent)学习如何在环境中动作，在学习的过程中，环境不断的给予动作相应的反馈。强化学习更多的指的是一类的算法或者学习问题的范式，其目标是长期最">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://yoursite.com/2019/04/06/强化学习基本理论/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>强化学习基本理论 | 一个帅哥的博客</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">一个帅哥的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">机器不学习，人工不智能</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/04/06/强化学习基本理论/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zh_woo">
+      <meta itemprop="description" content="专注于机器学习和人工智能各个领域的知识的学习！！！每周更新学习成果">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="一个帅哥的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">强化学习基本理论
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-04-06 00:55:25" itemprop="dateCreated datePublished" datetime="2019-04-06T00:55:25+08:00">2019-04-06</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-04-07 15:02:40" itemprop="dateModified" datetime="2019-04-07T15:02:40+08:00">2019-04-07</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/强化学习/" itemprop="url" rel="index"><span itemprop="name">强化学习</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="强化学习基本理论"><a href="#强化学习基本理论" class="headerlink" title="强化学习基本理论"></a>强化学习基本理论</h1><p>简介：本篇博客将介绍强化学习的基本理论，包括强化学习定义、马尔可夫决策过程、价值函数、贝尔曼方程、动态规划-基于模型的解决方案、强化学习-无模型的解决方案</p>
+<p>[TOC]</p>
+<h2 id="强化学习定义"><a href="#强化学习定义" class="headerlink" title="强化学习定义"></a>强化学习定义</h2><p>强化学习是机器学习领域内的一类算法，其目的在于：允许学习器(agent)学习如何在环境中动作，在学习的过程中，环境不断的给予动作相应的反馈。强化学习更多的指的是一类的算法或者学习问题的范式，其目标是长期最大化来自于环境的奖励，而通过与环境的交互，实现这个目标的算法被统称为强化学习。</p>
+<p>强化学习本质上是时序决策，即学习器不断的和环境进行交互，每次交互中需要决定采取什么样的下一步的动作。例如：你在状态p，你有4个可选的动作(环境) =>选择动作a(学习器决策)=>你得到来自环境的奖励，并且动作a之后自身状态变成了s，后续有3个可选的动作(环境)=>选择动作b(学习器决策)=>…………，强化学习的目标就是在每次的决策是选取最优的动作，这个目标的实现是通过对已有的一些交互样本的学习来实现的。</p>
+<p>时序决策有以下几个重要的方面需要考虑：</p>
+<ol>
+<li>解决时序决策的问题的方案可以总体分为3种，分别是基于编程、基于搜索和规划和基于学习的解决方案。基于编程的解决方案是指通过编程处理所有可能出现的方案，需要有大量的先验知识，而且问题往往规模很大且存在不确定性，因此，基于编程的解决方案只适合于完全已知且带有固定概率的静态小规模问题。第二种是基于搜索和规划的解决方案，标准的搜索和规划方法在系统的动态是已知的情况下采用，当动作的结果具有不确定性的情况下，需要一些其它方法如概率规划算法等等来解决。最后是基于学习的解决方案，也即强化学习。</li>
+<li>时序决策的学习根据学习方式的不同分为在线学习和离线学习。在线学习指的是直接在问题的实例上进行学习，离线学习使用环境的模拟器作为一种廉价的方式来获得训练样本。</li>
+<li>贡献分配。时序决策一个比较棘手的问题是，决定一个动作是好是坏不能在短时间内完成，例如围棋下棋，某步棋的效果可能要到很后面甚至比赛结束才能判定其作用。</li>
+<li>探索和运用的平衡。在无模型的时序决策问题的学习过程中，学习器通过和环境交互不断试错的方式来学习正确的策略。在试错的过程中，需要平衡已知的最优动作(经验的运用)和动作的探索情况(探索)，既要运用到当前探索的结果，又要去探索未知的动作，因为未知的动作可能存在比现在的最优动作更好的情况。</li>
+<li>反馈、目标和性能。时序决策介于有监督和无监督学习之间，来自环境的反馈是评估性的，而不是像监督学习那样具有指导性的。在有监督和无监督的学习中，数据集往往是固定的，而时序决策是不确定的随机的。时序决策的反馈来自与任务的自然表达。</li>
+<li>表达。如何表达时序决策，一种方法是马尔可夫过程模型，所有的组件都是显示存储。另外一种方式是演员-评论家方法，对价值函数和策略进行独立和明确的表示。</li>
+</ol>
+<p>强化学习根据模型参数是否已知，可以分为两类：基于模型的强化学习和无模型的强化学习。</p>
+<h2 id="马尔可夫决策过程"><a href="#马尔可夫决策过程" class="headerlink" title="马尔可夫决策过程"></a>马尔可夫决策过程</h2><p>强化学习问题的元素都可以通过马尔可夫决策过程来描述，马尔可夫决策过程可以看成有限自动机的自动扩展或者增加了动作和奖励的马尔可夫过程。马尔可夫决策过程包括四个组件分别是：状态、动作、转换函数和奖励方程。</p>
+<h3 id="状态"><a href="#状态" class="headerlink" title="状态"></a>状态</h3><p>一般的马尔可夫决策过程的状态集合指的是一个有限的集合S，代表了环境中所有可能出现的状态的集合</p>
+<script type="math/tex; mode=display">
+\{s^1,s^2,...,s^N\}</script><h3 id="动作"><a href="#动作" class="headerlink" title="动作"></a>动作</h3><p>学习器和环境交互的过程中能够采取的动作的集合A</p>
+<script type="math/tex; mode=display">
+\{a^1,a^2,...,a^k\}</script><p>在某些任务中，不是所有的动作都能应用与某一个状态，可以通过一个先决条件方程来对这一情况进行建模，表示某个动作是否能够用于某个状态</p>
+<script type="math/tex; mode=display">
+S\times A \rightarrow \{false,true\}</script><h3 id="转换函数"><a href="#转换函数" class="headerlink" title="转换函数"></a>转换函数</h3><p>转换函数表示，通过将动作a运用于状态s，基于可能转换集合的概率分布，转换函数T的具体定义如下：</p>
+<script type="math/tex; mode=display">
+T:S \times A \times S \rightarrow [0,1]</script><p>其中，需要满足以下条件：</p>
+<script type="math/tex; mode=display">
+\sum _{s’\in S}{T(s,a,s’)}=1</script><script type="math/tex; mode=display">
+T(s,a,s’)\geqq0</script><p>T(s,a,s’)表示的是在状态s采取动作a之后，状态转移到s’的概率。</p>
+<p>马尔可夫决策过程的状态转移具有马尔可夫特性即，动作的结果不依赖于以前的动作和状态，而仅仅取决于当前的状态。</p>
+<h3 id="奖励方程"><a href="#奖励方程" class="headerlink" title="奖励方程"></a>奖励方程</h3><p>奖励方程存在3中定义：</p>
+<script type="math/tex; mode=display">
+R：S \rightarrow \mathbb{R}</script><script type="math/tex; mode=display">
+R:S \times A \rightarrow \mathbb{R}</script><script type="math/tex; mode=display">
+R：S \times A \times S \rightarrow \mathbb{R}</script><p>分别表示了不同级别的奖励，第一种表示处于状态S能够从环境获得的奖励，第二种表示处于状态S采取动作A能够从环境获得的奖励，最后一种表示处于状态S采取动作A后状态变为S从环境获得的奖励，三者可以互相转换</p>
+<p>综上，马尔可夫决策过程可以形式化定义为一个四元组<s,a,t,r>，S表示状态集合，A表示动作集合，T表示转换函数，R表示奖励。</s,a,t,r></p>
+<h3 id="策略"><a href="#策略" class="headerlink" title="策略"></a>策略</h3><p>定义了马尔可夫决策过程之后，对于给定的一个马尔可夫决策过程<s,a,t,r>，策略表示的是在每个状态下应该采取的动作，也即强化学习需要学习的目标。</s,a,t,r></p>
+<script type="math/tex; mode=display">
+\pi : S \times A \rightarrow [0,1]</script><script type="math/tex; mode=display">
+\pi (s,a) \geqq 0</script><script type="math/tex; mode=display">
+\sum _{a \in A} {\pi (s,a)}=1</script><h2 id="价值函数和贝尔曼方程"><a href="#价值函数和贝尔曼方程" class="headerlink" title="价值函数和贝尔曼方程"></a>价值函数和贝尔曼方程</h2><p>价值函数定义：一个价值函数表示一个估计，是在一个特定的状态下(或者是在该状态下采取某一动作)对学习器的评估是否良好，价值函数为特定的策略所定义，只有确定了策略才能定义价值函数，通俗的说，价值函数代表了状态或者动作的好坏。</p>
+<p>在策略$\pi$下的状态S的价值，表示为$V^\pi\{s\}​$，代表了预期的收益，具体的定义为：</p>
+<script type="math/tex; mode=display">
+\begin{align}
+V^\pi(s) & =E_\pi{\{r_t+\gamma r_{t+1}+\gamma ^2r_{t+2}+...|s_t=t\}}\\
+         & =E_\pi\{r_t+\gamma V^\pi (S_{t+1})|s_t=s\}\\
+         & =\sum _{s’}{T(s,\pi (s),s’)(R(s,a,s’)+\gamma V^\pi (s’))}
+\end{align}</script><p>以上公式的具体意义表示的是，状态S的价值的期望等于在可能的转换概率加权的下一个状态的即时奖励和价值，外加一个阻尼系数，阻尼系数控制价值近期回报的重要程度。</p>
+<p>以上的方程被称为贝尔曼方程，强化学习的目标是学习一个策略，根据这个策略，$能够最大化收益​$ $V^\pi \{s\}​$，最优的策略如下方式计算：</p>
+<script type="math/tex; mode=display">
+\begin{align}
+V^*(s)=\max _{a \in A} {\sum _{s’}{T(s,a,s’)(R(s,a,s’)+\gamma V^* (s’))}}\\
+\pi ^*(s) = \arg \max _a {\sum _{s’}{T(s,a,s’)(R(s,a,s’)+\gamma V^* (s’))}}
+\end{align}</script><p>价值函数存在另外一种表示方式，被称为Q函数。</p>
+<script type="math/tex; mode=display">
+Q(s,a)=\sum _{s’}{T(s,a,s’)(R(s,a,s’)+\gamma V^* (s’))}\\
+V^*(s) = \max _a Q^*(s,a)</script><p>Q函数相比与直接的价值函数，结合了价值和动作，价值和动作不在是分离的，Q函数就能直接满足策略选取要求，无需再参考马尔可夫决策模型了。</p>
+<h2 id="动态规划-基于模型的解决方案"><a href="#动态规划-基于模型的解决方案" class="headerlink" title="动态规划-基于模型的解决方案"></a>动态规划-基于模型的解决方案</h2><p>动态规划是指在一个完善的马尔可夫决策模型的环境下，计算最优策略的一类算法。根据是采用价值函数还是采用Q函数，总体可以分为两种，分别是策略迭代和数值迭代。</p>
+<h3 id="策略迭代"><a href="#策略迭代" class="headerlink" title="策略迭代"></a>策略迭代</h3><p>策略迭代包含两个步骤：策略评估和策略改进。策略迭代可以从任意的策略开始。</p>
+<h4 id="策略评估"><a href="#策略评估" class="headerlink" title="策略评估"></a>策略评估</h4><p>策略评估指的是为特定的策略 $\pi​$找到其价值函数，这一步通过贝尔曼方程的迭代来实现。每次迭代时，对状态集合中的所有状态，更新其价值函数，具体如下：</p>
+<script type="math/tex; mode=display">
+V_{k+1} ^ \pi (s) = \sum _{s’}{T(s,\pi (s),s’)(R(s,\pi (s),s’)+\gamma V^* (s’))}</script><p>当k趋近于无穷的时候，价值函数可以证明会收敛，收敛后的价值函数即是固定策略 $\pi$对应的价值函数。</p>
+<h4 id="策略改进"><a href="#策略改进" class="headerlink" title="策略改进"></a>策略改进</h4><p>通过策略评估，我们得到了当前策略 $\pi$的价值函数，以此为基础，对策略进行改进，改进的方式是，贪婪策略，选择价值最高的动作，具体如下：</p>
+<script type="math/tex; mode=display">
+\pi (s’)=\arg \max _a {Q^\pi (s,a)}\\
+Q^\pi(s,a)=\sum _{s’}{T(s,a,s’)(R(s,a,s’)+\gamma V^* (s’))}\\</script><p>策略迭代的复杂度来源于策略评估，为 $O\{|A||S|^2 + |S|^3\}$</p>
+<h3 id="价值迭代"><a href="#价值迭代" class="headerlink" title="价值迭代"></a>价值迭代</h3><p>策略迭代完全分离了评估阶段和改进阶段，价值迭代算法将策略改进的步骤融合到迭代之中，价值迭代纯粹的专注于直接估计价值函数，策略的更新隐含在更新的价值函数中。这个方法的本质是将贝尔曼方程变成一个更新规则。</p>
+<script type="math/tex; mode=display">
+\begin{align}
+V_{t+1}(s) &=\max _aT(s,a,s’)(R(s,a,s')+ \gamma V _t(s’)) \\
+        & = \max _a Q_{t+1}(s,a)
+\end{align}</script><p>更新直到价值函数收敛为止，此时从价值函数中可以得出最优的策略。价值迭代的复杂度是 $O\{|A||S|^2\}$。</p>
+<h3 id="动态规划算法的改进"><a href="#动态规划算法的改进" class="headerlink" title="动态规划算法的改进"></a>动态规划算法的改进</h3><p>主要的改进思路有：</p>
+<ul>
+<li>状态值的更新。基本的动态规划算法采用的是同步更新的方法，更好的方法是进行异步更新，当更新一个状态时，可以使用新近更新的最新的相关的状态值，而不只是使用上一个时间点的状态值。</li>
+<li>策略评估。不采用基于贝尔曼方程的迭代评估，而是基于采用去进行策略的评估，如蒙特卡洛方法(alphaGo即采用了蒙特卡洛方法进行评估)。</li>
+<li>状态集合。往往很多任务的目标只和一些子状态有关(我们只关心其中一些状态)，将这些状态构成新的状态集合，这个集合可以是可扩展的。</li>
+</ul>
+<h2 id="强化学习-无模型的解决方案"><a href="#强化学习-无模型的解决方案" class="headerlink" title="强化学习-无模型的解决方案"></a>强化学习-无模型的解决方案</h2><p>无模型的方法不依赖于马尔科夫决策模型的先验知识，即<t,s,r,a>是未知的。无模型的方法通过采样来获取未知模型的统计知识。强化学习根据实现无模型解决方案方法的不同，分为间接强化学习和直接强化学习。间接强化学习通过采样和环境的交互估计出马尔可夫决策模型，然后再采用动态规划方法去解决学习问题。直接强化学习不估计马尔可夫决策模型，而是直接估计动作值。</t,s,r,a></p>
+<p>无模型的方法比较重要的一点是探索，探索指的是对于特定状态应该采取何动作这一问题的探究。好的探索方法平衡了利用目前已知的信息和探索未知信息这两点。</p>
+<h3 id="时序差分学习"><a href="#时序差分学习" class="headerlink" title="时序差分学习"></a>时序差分学习</h3><p>时序差分学习算法的核心思想是在其它估计值的基础上学习。举例：你的目标是预测什么时候能够买到今天晚餐需要的食材，为了达到这一目标，需要去超市、肉店和酒庄。开始的时候你估计去超市需要10分钟，从超市去肉店需要15分钟，从肉店去酒庄需要30分钟，从酒庄回家需要20分钟，于是，目标的估计值是75分钟。但是，今天比较堵，你从家到超市花了25分钟，此时，目标的估计值就可以更新为90分钟了，而不必等全部走完所有的步骤才进行更新。</p>
+<h4 id="TD-0-算法"><a href="#TD-0-算法" class="headerlink" title="TD(0)算法"></a>TD(0)算法</h4><p>TD(0)以一种在线的方式来估算策略，基于一个观察到的转换，只使用一个后续状态，而不是完整的所有后续状态的加权平均来进行更新，具体更新公式如下：</p>
+<script type="math/tex; mode=display">
+V_{k+1}(s)=(1-\alpha)V_k(s)+\alpha(r+\gamma V_k(s’))</script><h4 id="Q学习算法-离策略"><a href="#Q学习算法-离策略" class="headerlink" title="Q学习算法-离策略"></a>Q学习算法-离策略</h4><p>Q学习算法是TD学习的升级版本，TD学习使用的价值函数中使用了Q值和内置的max运算符而不是下一个状态的Q值。Q学习算法的更新规则如下：</p>
+<script type="math/tex; mode=display">
+Q_{k+1}(s_t,a_t)=(1-\alpha)Q_k(s_t,a_t)+\alpha(r_t+\gamma \max_aQ_k(s_{t+1},a))</script><h4 id="SARSA算法-在策略"><a href="#SARSA算法-在策略" class="headerlink" title="SARSA算法-在策略"></a>SARSA算法-在策略</h4><p>SARA算法的更新规则如下:</p>
+<script type="math/tex; mode=display">
+Q_{k+1}(s_t,a_t)=(1-\alpha)Q_k(s_t,a_t)+\alpha(r_t+\gamma Q_k(s_{t+1},a_{t+1}))</script><p>和Q学习算法相比，max运算符被策略所估计的下一个动作的值所取代，意味着SARA根据当前策略而不是贪心策略来学习Q值，当前策略指的是采样的策略(固定、完全随机和随时间不断调整等)。Q-learning在计算下一状态的预期收益时使用了max操作，直接选择最优动作，而当前policy并不一定能选择到最优动作，因此这里生成样本的policy和学习时的policy不同，为off-policy算法。而SARAS则是基于当前的policy直接执行一次动作选择，然后用这个样本更新当前的policy，因此生成样本的policy和学习时的policy相同，算法为on-policy算法。</p>
+<p>SARAS算法适合用于非平稳的过程</p>
+<h4 id="模拟算法-演员-评论家学习"><a href="#模拟算法-演员-评论家学习" class="headerlink" title="模拟算法-演员-评论家学习"></a>模拟算法-演员-评论家学习</h4><p>结合基于价值(TD)和策略(Q学习和SARSA)的无模型方法，类似于对抗生成网络，评论家给演员的动作打分，演员进行动作表演。</p>
+<p>评论家打分</p>
+<script type="math/tex; mode=display">
+\delta _t = r_t + \gamma V(s_{t+1})-V(s_t)</script><p>演员动作偏好：</p>
+<script type="math/tex; mode=display">
+p(s_t,a_t):=p(s_t,a_t)+\beta \delta _t</script><p>SARSA、Q学习算法和DQN等算法被称为valued-based的模型，具有以下局限性：</p>
+<ul>
+<li>处理连续动作效果差。对于高维度或连续状态空间，使用Value Based通过得到价值函数再制定策略，需要比较所有action的价值大小，此时选出最大价值行为会十分艰难。</li>
+<li>受制环境而无法最优。空间观测局限，无法准备的描述场景。</li>
+<li>不能解决随机策略问题。随机策略往往可能是最优的，但Value Based无法学习到随机策略(无法收敛)。比如石头剪刀布，如果一直坚持某个确定性策略，怎么可能不输？显然最好的策略就是随机选择以得到最大可能的总体奖励。</li>
+</ul>
+<p>模拟算法就是为了解决这些问题提出来的，模拟算法直接学习策略，通过反馈来实现，如果这次动作反馈好，下一次选这个动作的概率就增加。</p>
+<h3 id="蒙特卡洛方法"><a href="#蒙特卡洛方法" class="headerlink" title="蒙特卡洛方法"></a>蒙特卡洛方法</h3><p>蒙特卡洛通过采样得到大平均样本的回报来计算未来的奖励，例如：下棋时，在某局面下，落子动作a的价值用采样的方法进行评估，动作a之后，采用一些策略(如随机)下完整盘棋(共下x次)，统计x次中赢棋和输棋的频率，来计算动作a的价值的大小。</p>
+<p>如上面所说，蒙特卡洛方法的探索很重要。</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/理论研究/" rel="tag"># 理论研究</a>
+          
+            <a href="/tags/机器学习/" rel="tag"># 机器学习</a>
+          
+            <a href="/tags/人工智能/" rel="tag"># 人工智能</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/03/30/hello-world/" rel="next" title="Hello World">
+                <i class="fa fa-chevron-left"></i> Hello World
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">zh_woo</p>
+              <div class="site-description motion-element" itemprop="description">专注于机器学习和人工智能各个领域的知识的学习！！！每周更新学习成果</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">2</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                    <span class="site-state-item-count">1</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">3</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#强化学习基本理论"><span class="nav-number">1.</span> <span class="nav-text">强化学习基本理论</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#强化学习定义"><span class="nav-number">1.1.</span> <span class="nav-text">强化学习定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#马尔可夫决策过程"><span class="nav-number">1.2.</span> <span class="nav-text">马尔可夫决策过程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#状态"><span class="nav-number">1.2.1.</span> <span class="nav-text">状态</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#动作"><span class="nav-number">1.2.2.</span> <span class="nav-text">动作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#转换函数"><span class="nav-number">1.2.3.</span> <span class="nav-text">转换函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#奖励方程"><span class="nav-number">1.2.4.</span> <span class="nav-text">奖励方程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#策略"><span class="nav-number">1.2.5.</span> <span class="nav-text">策略</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#价值函数和贝尔曼方程"><span class="nav-number">1.3.</span> <span class="nav-text">价值函数和贝尔曼方程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#动态规划-基于模型的解决方案"><span class="nav-number">1.4.</span> <span class="nav-text">动态规划-基于模型的解决方案</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#策略迭代"><span class="nav-number">1.4.1.</span> <span class="nav-text">策略迭代</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#策略评估"><span class="nav-number">1.4.1.1.</span> <span class="nav-text">策略评估</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#策略改进"><span class="nav-number">1.4.1.2.</span> <span class="nav-text">策略改进</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#价值迭代"><span class="nav-number">1.4.2.</span> <span class="nav-text">价值迭代</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#动态规划算法的改进"><span class="nav-number">1.4.3.</span> <span class="nav-text">动态规划算法的改进</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#强化学习-无模型的解决方案"><span class="nav-number">1.5.</span> <span class="nav-text">强化学习-无模型的解决方案</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#时序差分学习"><span class="nav-number">1.5.1.</span> <span class="nav-text">时序差分学习</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#TD-0-算法"><span class="nav-number">1.5.1.1.</span> <span class="nav-text">TD(0)算法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Q学习算法-离策略"><span class="nav-number">1.5.1.2.</span> <span class="nav-text">Q学习算法-离策略</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#SARSA算法-在策略"><span class="nav-number">1.5.1.3.</span> <span class="nav-text">SARSA算法-在策略</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#模拟算法-演员-评论家学习"><span class="nav-number">1.5.1.4.</span> <span class="nav-text">模拟算法-演员-评论家学习</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#蒙特卡洛方法"><span class="nav-number">1.5.2.</span> <span class="nav-text">蒙特卡洛方法</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zh_woo</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.0.1</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+    
+    
+  
+  <script color="0,0,255" opacity="0.5" zindex="-1" count="99" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/src/utils.js?v=7.0.1"></script>
+
+  <script src="/js/src/motion.js?v=7.0.1"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/src/affix.js?v=7.0.1"></script>
+
+  <script src="/js/src/schemes/pisces.js?v=7.0.1"></script>
+
+
+
+  
+  <script src="/js/src/scrollspy.js?v=7.0.1"></script>
+<script src="/js/src/post-details.js?v=7.0.1"></script>
+
+
+
+  
+
+
+  <script src="/js/src/next-boot.js?v=7.0.1"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+  
+    
+      <script type="text/x-mathjax-config">
+  
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') { next = next.nextSibling }
+        if (next && next.nodeName.toLowerCase() === 'br') { next.parentNode.removeChild(next) }
+      }
+    });
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      document.getElementById(all[i].inputID + '-Frame').parentNode.className += ' has-jax';
+    }
+  });
+</script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+
+    
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
